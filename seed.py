@@ -11,7 +11,7 @@ def load_users():
     users_file = open("seed_data/u.user")
 
     for line in users_file:
-        user_info = line.split("|")
+        user_info = line.strip().split("|")
         user_id = user_info[0]
         user_age = user_info[1]
         user_zipcode = user_info[4]
@@ -27,7 +27,7 @@ def load_movies():
     movies_file = open("seed_data/u.item")
 
     for line in movies_file:
-        movie_info = line.split("|")
+        movie_info = line.strip().split("|")
         movie_id = movie_info[0]
         movie_title = movie_info[1]
         movie_title = movie_title[:-7]          # remove year in parentheses from title
