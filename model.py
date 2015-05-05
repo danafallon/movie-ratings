@@ -29,7 +29,7 @@ class User(db.Model):
         return "<User user_id=%s email=%s>" % (self.user_id, self.email)
 
 class Movie(db.Model):
-
+    """Movie in database."""
     __tablename__="movies"
 
     movie_id = db.Column(db.Integer,autoincrement=True, primary_key=True)
@@ -38,7 +38,7 @@ class Movie(db.Model):
     imdb_url = db.Column(db.String(200), nullable=True)
 
 class Rating(db.Model):
-
+    """Rating of movie by user."""
     __tablename__ = "ratings"
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)

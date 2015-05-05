@@ -5,7 +5,12 @@
 </head>
 
 <body>
-  Ratings
+    {% if 'email' in session %}
+        Logged in as: {{ session['email'] }}
+        <a href="/logout">Log Out</a>
+    {% else %}
+        <a href="/login">Log In</a>
+    {% endif %}
   <hr>
 
     {% with messages = get_flashed_messages() %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>Movie Details</h2>
+
+    <p>Title: {{movie.title}}</p>
+    <h4>Movie ratings:</h4>
+    <ul>
+      {% for rating in ratings %}
+        <li>{{rating.score}}</li>
+      {% endfor %}
+    </ul>
+
+    {% if 'email' in session %}
+
+    <form action='/set-rating/{{ movie.movie_id }}' method="POST">
+        <label> Type your rating here: 
+            <input type="text" name="rating">
+        </label>
+
+        <input type="submit" >
+
+    </form>
+
+    {% endif %}
+
+{% endblock %}
