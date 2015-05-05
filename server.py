@@ -56,7 +56,7 @@ def movie_list():
     return render_template("movie_list.html", movies=movies)
 
 
-@app.route('/movies/<int:movie_id>')
+@app.route('/movies/<int:movie_id>',methods=["GET","POST"])
 def movie_details(movie_id):
     """Display movie details for movie_id specified in url."""
 
@@ -64,27 +64,27 @@ def movie_details(movie_id):
 
     ratings = Rating.query.filter_by(movie_id=movie_id).all()
 
-    return render_template('movie_details.html', movie=movie, ratings=ratings)
-
-
-@app.route('/set-rating/<int:movie_id>',methods=["GET","POST"])   #movie_id not being passed into url from form.
-def set_rating(movie_id):
-    """Add or update user's rating for this movie."""
-
     rating = request.form.get("rating")
-    email = session.get('email',[])
-    user_id = User.query.filter_by(email=email).one().user_id
+    user_id = session.get('user_id', [])
+    if user_id:
+        record = Rating.query.filter_by(movie_id=movie_id, user_id=user_id).first()
 
-    record = Rating.query.filter_by(movie_id=movie_id, user_id=user_id).all()
+    if rating:
 
-    if record:
-        record.score = rating
-        flash('Rating updated')
-    else:
-        record = Rating(movie_id=movie_id, user_id=user_id, score=rating)
-        flash('Rating saved')
-    
-    return redirect('/set-rating/<int:movie_id>')
+        if record:
+            record.score = rating
+            flash('Rating updated')
+        else:
+            record = Rating(movie_id=movie_id, user_id=user_id, score=rating)
+            db.session.add(record)
+            flash('Rating saved')
+
+        db.session.commit()
+        print Rating.query.filter_by(movie_id=movie_id, user_id=user_id).all()
+
+        return redirect('/movies/%d' % movie_id)
+
+    return render_template('movie_details.html', movie=movie, ratings=ratings, record=record)
 
 
 @app.route('/login', methods=["GET"])
@@ -110,6 +110,7 @@ def login():
 
     if user.password == password:
         session['email'] = email
+        session['user_id'] = id
         flash("Logged in")
         return redirect('/users/%d' % id)
     else:
