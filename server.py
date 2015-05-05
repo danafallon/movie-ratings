@@ -32,16 +32,53 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
+@app.route('/users/<int:id>')
+def user_details(id):
+
+    user = User.query.get(id)
+
+    rating_dict = {}    
+    ratings = Rating.query.filter_by(user_id=id).all()
+    for rating in ratings:
+        title = Movie.query.filter_by(movie_id=rating.movie_id).one().title
+        rating_dict[title] = rating.score
+
+    return render_template('user_details.html', user=user, ratings=rating_dict)
+    
+
+@app.route('/login', methods=["GET"])
+def show_login():
+
+    return render_template("login.html")
+
 @app.route('/login', methods=["POST"])
 def login():
 
     email = request.form.get("email")
     password = request.form.get("password")
 
-    
+    user = User.query.filter_by(email=email).first()
+    id = user.user_id
 
-    return render_template("login.html")
+    if not user:
+        flash("Email not registered")
+        return redirect('/login')
 
+    if user.password == password:
+        session['email'] = email
+        flash("Logged in")
+        return redirect('/users/%d' % id)
+    else:
+        flash("Incorrect password")
+        return redirect('/login')
+ 
+
+@app.route('/logout')
+def logout():
+
+    del session['email']
+    flash("You have been successfully logged out.")
+    return redirect('/')
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
@@ -51,6 +88,6 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run()
