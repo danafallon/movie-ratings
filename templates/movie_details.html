@@ -25,7 +25,7 @@
     <h4>Movie ratings:</h4>
     <ul>
       {% for rating in ratings %}
-        <li>{{rating.user_id}} gave this movie a score of: {{rating.score}}</li>
+        <li>User {{rating.user_id}} gave this movie a score of: {{rating.score}}</li>
       {% endfor %}
     </ul>
 

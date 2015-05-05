@@ -1,6 +1,7 @@
 """Models and database functions for Ratings project."""
 
 from flask_sqlalchemy import SQLAlchemy
+from correlation import pearson
 
 # This is the connection to the SQLite database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
@@ -27,6 +28,43 @@ class User(db.Model):
         """Provide helpful representation when printed."""
 
         return "<User user_id=%s email=%s>" % (self.user_id, self.email)
+
+    def similarity(self, other_user):
+        """Create pairs of ratings for the two users and calculate similarity
+        score using pearson function."""
+
+        u = self
+        o = other_user
+        u_ratings = u.ratings                                       # list of objects
+        o_ratings = o.ratings                                       # list of objects
+        movies_u_rated = set([rating.movie_id for rating in u_ratings])
+        movies_o_rated = set([rating.movie_id for rating in o_ratings])
+        movies_both_rated = movies_u_rated & movies_o_rated                       # set of movie_ids in common
+        u_scores = {}
+        for rating in u.ratings:
+            if rating.movie_id in movies_both_rated:
+                u_scores[rating.movie_id] = rating.score
+
+        o_scores = {}
+        for rating in o.ratings:
+            if rating.movie_id in movies_both_rated:
+                o_scores[rating.movie_id] = rating.score
+
+        pairs = []
+        for movie_id in u_scores.keys():
+            score_pair = (u_scores[movie_id], o_scores[movie_id])
+            pairs.append(score_pair)
+
+        return pearson(pairs)
+
+
+    # def pick_similar_user():
+
+
+    # def predict_score():
+
+
+
 
 class Movie(db.Model):
     """Movie in database."""
