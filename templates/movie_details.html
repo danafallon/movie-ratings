@@ -11,6 +11,11 @@
             <p>Your current score for this movie is {{record.score}}. You can update it below.</p>
         {% endif %}
 
+        <p>Average rating: {{ average }}</p>
+        {% if prediction %}
+            <p>We predict you will rate this movie {{ prediction }}.</p>
+        {% endif %}
+
         <form action="/movies/{{ movie.movie_id }}" method="POST">
             <label> Type your rating here: 
                 <input type="text" name="rating">

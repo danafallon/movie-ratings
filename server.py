@@ -66,25 +66,37 @@ def movie_details(movie_id):
 
     rating = request.form.get("rating")
     user_id = session.get('user_id', [])
+
+    rating_scores = [r.score for r in movie.ratings]
+    avg_rating = float(sum(rating_scores)) / len(rating_scores)
+
+    prediction = None
+    record = None
+
     if user_id:
         record = Rating.query.filter_by(movie_id=movie_id, user_id=user_id).first()
 
-    if rating:
+        if rating:
 
-        if record:
-            record.score = rating
-            flash('Rating updated')
-        else:
-            record = Rating(movie_id=movie_id, user_id=user_id, score=rating)
-            db.session.add(record)
-            flash('Rating saved')
+            if record:
+                record.score = rating
+                flash('Rating updated')
+            else:
+                record = Rating(movie_id=movie_id, user_id=user_id, score=rating)
+                db.session.add(record)
+                flash('Rating saved')
 
-        db.session.commit()
-        print Rating.query.filter_by(movie_id=movie_id, user_id=user_id).all()
+            db.session.commit()
+            print Rating.query.filter_by(movie_id=movie_id, user_id=user_id).all()
 
-        return redirect('/movies/%d' % movie_id)
+            return redirect('/movies/%d' % movie_id)
 
-    return render_template('movie_details.html', movie=movie, ratings=ratings, record=record)
+        if not record:
+            user = User.query.get(user_id)
+            if user:
+                prediction = user.predict_rating(movie)
+
+    return render_template('movie_details.html', movie=movie, ratings=ratings, record=record, prediction=prediction, average=avg_rating)
 
 
 @app.route('/login', methods=["GET"])
