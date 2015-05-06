@@ -5,12 +5,15 @@
 </head>
 
 <body>
+
     {% if 'email' in session %}
-        Logged in as: {{ session['email'] }}
+        Logged in as: <a href="/users/{{session['user_id']}}">{{ session['email'] }}</a>
         <a href="/logout">Log Out</a>
     {% else %}
         <a href="/login">Log In</a>
+        <a href="/register">Register</a>
     {% endif %}
+    <a href="/">Home</a>
   <hr>
 
     {% with messages = get_flashed_messages() %}

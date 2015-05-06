@@ -8,12 +8,19 @@
     {% if 'email' in session %}
 
         {% if record %}
-            <p>Your current score for this movie is {{record.score}}. You can update it below.</p>
+            <p>Your current score for this movie is {{record.score}}. The Eye rates this movie as {{eye_rating}}. 
+            {% if beratement %}
+                {{beratement}} 
+            {% endif %}
+            You can update your rating below.</p>
         {% endif %}
 
         <p>Average rating: {{ average }}</p>
         {% if prediction %}
-            <p>We predict you will rate this movie {{ prediction }}.</p>
+            <p>We predict you will rate this movie {{ prediction }}. The Eye rates this movie as {{eye_rating}}. 
+            {% if beratement %}
+                {{beratement}}
+            {% endif %}</p>
         {% endif %}
 
         <form action="/movies/{{ movie.movie_id }}" method="POST">

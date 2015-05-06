@@ -7,8 +7,8 @@
     <p>Zipcode: {{user.zipcode}}</p>
     <h4>Movie ratings:</h4>
     <ul>
-      {% for title in ratings.keys() %}
-        <li>{{title}}: {{ratings[title]}}</li>
+      {% for movie in ratings.keys() %}
+        <li><a href="/movies/{{ movie.movie_id }}">{{movie.title}}</a>: {{ratings[movie]}}</li>
       {% endfor %}
     </ul>
 

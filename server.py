@@ -42,8 +42,8 @@ def user_details(id):
     rating_dict = {}    
     ratings = Rating.query.filter_by(user_id=id).all()
     for rating in ratings:                                     # make dictionary with movie title as key and rating score as value
-        title = Movie.query.filter_by(movie_id=rating.movie_id).one().title
-        rating_dict[title] = rating.score
+        movie = Movie.query.filter_by(movie_id=rating.movie_id).one()
+        rating_dict[movie] = rating.score
 
     return render_template('user_details.html', user=user, ratings=rating_dict)
 
@@ -96,7 +96,56 @@ def movie_details(movie_id):
             if user:
                 prediction = user.predict_rating(movie)
 
-    return render_template('movie_details.html', movie=movie, ratings=ratings, record=record, prediction=prediction, average=avg_rating)
+        # compare the user's rating/prediction to the eye's rating/prediction:
+        # Either use the prediction or their real rating
+        if prediction:
+            # User hasn't scored; use our prediction if we made one
+            effective_rating = prediction
+
+        elif record:
+            # User has already scored for real; use that
+            effective_rating = record.score
+
+        else:
+            # User hasn't scored, and we couldn't get a prediction
+            effective_rating = None
+
+        # Get the eye's rating, either by predicting or using real rating
+
+        the_eye = User.query.filter_by(email="the-eye@of-judgment.com").one()
+        eye_rating = Rating.query.filter_by(
+            user_id=the_eye.user_id, movie_id=movie.movie_id).first()
+
+        if eye_rating is None:
+            eye_rating = the_eye.predict_rating(movie)
+            print eye_rating
+        else:
+            eye_rating = eye_rating.score
+
+
+        if eye_rating and effective_rating:
+            difference = abs(eye_rating - effective_rating)
+        else:
+            # We couldn't get an eye rating, so we'll skip difference
+            difference = None
+
+        BERATEMENT_MESSAGES = [
+            "I suppose you don't have such bad taste after all.",
+            "I regret every decision that I've ever made that has brought me" +
+                " to listen to your opinion.",
+            "Words fail me, as your taste in movies has clearly failed you.",
+            "That movie is great. For a clown to watch. Idiot.",
+            "Words cannot express the awfulness of your taste."
+        ]
+
+        if difference:
+            beratement = BERATEMENT_MESSAGES[int(difference)]
+
+        else:
+            beratement = None
+
+    return render_template('movie_details.html', movie=movie, ratings=ratings, record=record, 
+        prediction=prediction, average=avg_rating, beratement=beratement, eye_rating=eye_rating)
 
 
 @app.route('/login', methods=["GET"])
@@ -128,6 +177,38 @@ def login():
     else:
         flash("Incorrect password")
         return redirect('/login')
+
+@app.route('/register', methods=["GET"])
+def show_registration():
+    """Display user registration form"""
+
+    return render_template('register_user.html')
+
+@app.route('/register', methods=["POST"])
+def register_user():
+    """Gather registration information and validate"""
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+    age = request.form.get("age")
+    zipcode = request.form.get("zipcode")
+
+    registered_user = User.query.filter_by(email=email).first()
+
+    if registered_user:
+        flash("Email is already associated with a user")
+        return redirect('/register')
+
+    else:
+        new_user = User(email=email,password=password,age=age,zipcode=zipcode)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        user_id = User.query.filter_by(email=email).first().user_id
+        session['email'] = email
+        session['user_id'] = user_id
+
+        return redirect('/users/%d' % user_id)
  
 
 @app.route('/logout')
