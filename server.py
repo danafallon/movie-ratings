@@ -29,7 +29,8 @@ def index():
 def user_list():
     """Show list of users."""
 
-    users = User.query.all()
+    users = User.query.order_by(User.user_id.desc()).all()
+
     return render_template("user_list.html", users=users)
 
 
