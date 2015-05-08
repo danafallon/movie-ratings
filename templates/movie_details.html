@@ -11,7 +11,7 @@
                     <div class="col-xs-6">
                         <h4>IMDB Page: <a font-size="12px" href="{{movie.imdb_url}}">{{movie.imdb_url}}</a></h4>
 
-                        <h4>Release Date: {{movie.released_at}}</h4>
+                        <h4>Release Date: {{release_date}}</h4>
                         <br>
                         <h4>Movie ratings:</h4>
                         <ul>
@@ -24,27 +24,27 @@
                 {% if 'email' in session %}
                     <div class="col-xs-6">
                         {% if record %}
-                            <p>Your current score for this movie is {{record.score}}. The Eye rates this movie as {{eye_rating}}. 
+                            <h4>Your current score for this movie is <b>{{record.score}}</b>. The Eye rates this movie as <b>{{eye_rating}}</b>. 
                             {% if beratement %}
                                 {{beratement}} 
                             {% endif %}
-                            You can update your rating below.</p>
+                            You can update your rating below.</h4>
                         {% endif %}
 
-                        <p><b>Average rating: </b>{{ average }}</p>
+                        <h4><b>Average rating: </b>{{ average }}</h4>
                         {% if prediction %}
-                            <p>We predict you will rate this movie {{ prediction }}. The Eye rates this movie as {{eye_rating}}. 
+                            <h4>We predict you will rate this movie {{ prediction }}. The Eye rates this movie as {{eye_rating}}. 
                             {% if beratement %}
                                 {{beratement}}
-                            {% endif %}</p>
+                            {% endif %}</h4>
                         {% endif %}
 
                         <form action="/movies/{{ movie.movie_id }}" method="POST">
                             <label> Type your rating here: 
-                                <input type="text" name="rating">
+                                <input type="number" class="form-control" name="rating" placeholder="Rating">
                             </label>
 
-                            <input type="submit" >
+                            <button type="submit" class="btn btn-primary">Submit</button>
 
                         </form>
                     </div>

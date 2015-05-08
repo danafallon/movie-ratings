@@ -5,6 +5,8 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
+from datetime import datetime
+
 from model import User, Rating, Movie, connect_to_db, db
 
 
@@ -70,6 +72,8 @@ def movie_details(movie_id):
 
     rating_scores = [r.score for r in movie.ratings]
     avg_rating = float(sum(rating_scores)) / len(rating_scores)
+
+    release_date = movie.released_at.strftime("%d-%b-%Y")
 
     prediction = None
     record = None
@@ -146,7 +150,8 @@ def movie_details(movie_id):
             beratement = None
 
     return render_template('movie_details.html', movie=movie, ratings=ratings, record=record, 
-        prediction=prediction, average=avg_rating, beratement=beratement, eye_rating=eye_rating)
+        prediction=prediction, average=avg_rating, beratement=beratement, eye_rating=eye_rating,
+        release_date=release_date)
 
 
 @app.route('/search', methods=["GET"])
