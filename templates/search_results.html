@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Search Results</h1>
+
+<ul>
+    {% for match in matches %}
+        <li><a href="/movies/{{ match.movie_id }}">{{match.title}}</a></li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

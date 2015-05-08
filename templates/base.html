@@ -16,13 +16,10 @@
     <div class="container-fluid">
 
         <div class="row">
-
             <nav class="navbar navbar-default">
 
                 <div class="container-fluid">
-            
                     <div class="navbar-header">
-
                         <button type="button"
                             class="navbar-toggle collapsed"
                             data-toggle="collapse"
@@ -34,14 +31,13 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-
-                        <a class="navbar-brand" href="/">Judgemental Eye</a>
+                        <a class="navbar-brand" href="/">Judgmental Eye</a>
                     </div> 
 
                     <div id="navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li><a href="/movies">Movies</a></li>
-                            <li><a href="/users">Users</a></li>
+                            <li><a href="/movies">View All Movies</a></li>
+                            <li><a href="/users">View All Users</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             {% if 'email' in session %}
@@ -55,20 +51,27 @@
                     </div>
                 </div>
         
-             </nav>
-
+            </nav>
         </div>
-                       
 
-  <hr>
+        <div class="row">
+            <form class="navbar-form navbar-right" role="search" action="/search">
+                <div class="form-group" >
+                    <input type="text" class="form-control" placeholder="Search Movies" name="title">
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+            </form>
+        </div>
 
-    {% with messages = get_flashed_messages() %}
-      {% for message in messages %}
-          <div class="alert alert-warning">{{ message }}</div>
-      {% endfor %}
-    {% endwith %}
+      <!-- <hr> -->
 
-  {% block content %} put your content here {% endblock %}
+        {% with messages = get_flashed_messages() %}
+          {% for message in messages %}
+              <div class="alert alert-warning">{{ message }}</div>
+          {% endfor %}
+        {% endwith %}
 
+        {% block content %} put your content here {% endblock %}
+    </div> 
 </body>
 </html>

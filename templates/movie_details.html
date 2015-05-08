@@ -1,45 +1,57 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h2>Movie Details</h2>
+    <h2>{{movie.title}}</h2>
+    <br>
 
-    <p>Title: {{movie.title}}</p>
 
-    {% if 'email' in session %}
+        <div class = "container-fluid">
+            <div class = "row" >
+                <div class="container-fluid">
+                    <div class="col-xs-6">
+                        <h4>IMDB Page: <a font-size="12px" href="{{movie.imdb_url}}">{{movie.imdb_url}}</a></h4>
 
-        {% if record %}
-            <p>Your current score for this movie is {{record.score}}. The Eye rates this movie as {{eye_rating}}. 
-            {% if beratement %}
-                {{beratement}} 
-            {% endif %}
-            You can update your rating below.</p>
-        {% endif %}
+                        <h4>Release Date: {{movie.released_at}}</h4>
+                        <br>
+                        <h4>Movie ratings:</h4>
+                        <ul>
+                          {% for rating in ratings %}
+                            <li>User {{rating.user_id}} gave this movie a score of: {{rating.score}}</li>
+                          {% endfor %}
+                        </ul>
+                    </div>
 
-        <p>Average rating: {{ average }}</p>
-        {% if prediction %}
-            <p>We predict you will rate this movie {{ prediction }}. The Eye rates this movie as {{eye_rating}}. 
-            {% if beratement %}
-                {{beratement}}
-            {% endif %}</p>
-        {% endif %}
+                {% if 'email' in session %}
+                    <div class="col-xs-6">
+                        {% if record %}
+                            <p>Your current score for this movie is {{record.score}}. The Eye rates this movie as {{eye_rating}}. 
+                            {% if beratement %}
+                                {{beratement}} 
+                            {% endif %}
+                            You can update your rating below.</p>
+                        {% endif %}
 
-        <form action="/movies/{{ movie.movie_id }}" method="POST">
-            <label> Type your rating here: 
-                <input type="text" name="rating">
-            </label>
+                        <p><b>Average rating: </b>{{ average }}</p>
+                        {% if prediction %}
+                            <p>We predict you will rate this movie {{ prediction }}. The Eye rates this movie as {{eye_rating}}. 
+                            {% if beratement %}
+                                {{beratement}}
+                            {% endif %}</p>
+                        {% endif %}
 
-            <input type="submit" >
+                        <form action="/movies/{{ movie.movie_id }}" method="POST">
+                            <label> Type your rating here: 
+                                <input type="text" name="rating">
+                            </label>
 
-        </form>
+                            <input type="submit" >
 
-    {% endif %}
+                        </form>
+                    </div>
+ 
+                {% endif %}
 
-    <h4>Movie ratings:</h4>
-    <ul>
-      {% for rating in ratings %}
-        <li>User {{rating.user_id}} gave this movie a score of: {{rating.score}}</li>
-      {% endfor %}
-    </ul>
-
+                </div>
+            </div>    
 
 {% endblock %}

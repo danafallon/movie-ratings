@@ -1,30 +1,36 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>Register</h2>
+<h1>Register</h1>
+<br>
 
 <form action='/register' method="POST">
-    <label>Email Address:
-        <input type="text" name="email"></label>
+    <div class="form-group">
+        <label for="inputEmail" class="control-label">Email Address:
+            <input type="text" class="form-control" name="email" placeholder="Email">
+        </label>
+
+            <br>
+
+        <label for="inputPassword" class="control-label">Password: 
+            <input type="password" class="form-control" name="password" placeholder="Password">
+        </label>
 
         <br>
 
-    <label>Password: 
-        <input type="text" name="password"></label>
+        <label class="control-label">Age: 
+            <input type="number" class="form-control" name="age" placeholder="Age">
+        </label>
 
-    <br>
+        <br>
 
-    <label>Age: 
-        <input type="number" name="age"></label>
+        <label class="control-label">Zipcode: 
+            <input type="text" class="form-control" name="zipcode" placeholder=Zipcode>
+        </label>
 
-    <br>
-
-    <label>Zipcode: 
-        <input type="text" name="zipcode"></label>
-
-    <br>
-
-    <input type="submit">
+        <br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
 
 </form>
 

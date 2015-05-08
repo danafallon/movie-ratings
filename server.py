@@ -149,6 +149,26 @@ def movie_details(movie_id):
         prediction=prediction, average=avg_rating, beratement=beratement, eye_rating=eye_rating)
 
 
+@app.route('/search', methods=["GET"])
+def search_movies():
+    """Take user's search input and find matching movie."""
+
+    title = request.args.get("title")
+
+    matches = Movie.query.filter(Movie.title.like('%'+title+'%')).all()
+
+    if len(matches) > 1:
+        return render_template('search_results.html', matches=matches)
+
+    if len(matches) == 1:
+        movie_id = matches[0].movie_id
+        return redirect('/movies/%d' % movie_id)
+
+    if len(matches) == 0:
+        flash('No movies found matching this search')
+        return redirect('/movies')
+
+
 @app.route('/login', methods=["GET"])
 def show_login():
     """Display login form."""
@@ -162,6 +182,10 @@ def login():
 
     email = request.form.get("email")
     password = request.form.get("password")
+
+    if not email or not password:
+        flash("Please enter your email address and password")
+        return redirect('/login')
 
     user = User.query.filter_by(email=email).first()
     id = user.user_id
@@ -198,6 +222,10 @@ def register_user():
 
     if registered_user:
         flash("Email is already associated with a user")
+        return redirect('/register')
+
+    elif not email or not password:
+        flash("Please enter an email address and password")
         return redirect('/register')
 
     else:
