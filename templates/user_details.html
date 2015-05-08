@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h2>User Details</h2>
+    <h1>User Details</h1>
 
-    <p>Age: {{user.age}}</p>
-    <p>Zipcode: {{user.zipcode}}</p>
-    <h4>Movie ratings:</h4>
+    <h4>Age: {{user.age}}</h4>
+    <h4>Zipcode: {{user.zipcode}}</h4>
+    <h2>Movie ratings:</h2>
     <ul>
       {% for movie in ratings.keys() %}
         <li><a href="/movies/{{ movie.movie_id }}">{{movie.title}}</a>: {{ratings[movie]}}</li>
